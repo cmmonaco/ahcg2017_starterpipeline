@@ -1,4 +1,7 @@
-# ahcg_pipeline
+# Applied Human Computational Genomics Pipeline
+**Chris Monaco \
+  MS Bioinformatics 2018 | Georgia Institute of Technology**
+
 Variant calling pipeline for genomic data analysis
 
 ## Chris Monaco
