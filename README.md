@@ -4,6 +4,11 @@
 
 Variant calling pipeline for genomic data analysis
 
+## Class Server
+
+Server: `gpuvannberg.biology.gatech.edu`
+Data Folder: `/data2/AHCG2017FALL/`
+
 ## Requirements
 
 1. [Python3 - version 3.4.1](https://www.python.org/download/releases/3.4.1/)
@@ -36,3 +41,9 @@ To access help use the following command:
 ```{sh}
 python3 ahcg_pipeline.py -h
 ```
+# August 31 - Assessing a Standard Variant Call Pipeline
+
+Based on data from this [paper](https://www.nature.com/nbt/journal/v31/n11/full/nbt.2696.html).
+
+## Data Acquisition
+
