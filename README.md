@@ -41,9 +41,18 @@ To access help use the following command:
 ```{sh}
 python3 ahcg_pipeline.py -h
 ```
-# August 31 - Assessing a Standard Variant Call Pipeline
+# August 31 - Sept 5: Assessing a Standard Variant Call Pipeline
 
 Based on data from this [paper](https://www.nature.com/nbt/journal/v31/n11/full/nbt.2696.html).
 
 ## Data Acquisition
+
+## Bowtie Index
+
+Pre-built index was supplied in the `../reference_genome` folder.
+
+## Running Pipeline
+
+  python ahcg_pipeline_v1.0.1.py -t /data2/AHCG2017FALL/bin/Trimmomatic-0.36 -b /data2/AHCG2017FALL/bin/bowtie2-2.2.9 -p /data2/AHCG2017FALL/bin/picard -g /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836 -i /data2/AHCG2017FALL/data/ -w /data2/AHCG2017FALL/reference_genome -r /data2/AHCG2017FALL/reference_genome -a /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa -o /data2/AHCG2017FALL/output -d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle
+
 
