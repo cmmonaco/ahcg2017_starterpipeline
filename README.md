@@ -53,6 +53,16 @@ Pre-built index was supplied in the `../reference_genome` folder.
 
 ## Running Pipeline
 
-  python ahcg_pipeline_v1.0.1.py -t /data2/AHCG2017FALL/bin/Trimmomatic-0.36 -b /data2/AHCG2017FALL/bin/bowtie2-2.2.9 -p /data2/AHCG2017FALL/bin/picard -g /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836 -i /data2/AHCG2017FALL/data/ -w /data2/AHCG2017FALL/reference_genome -r /data2/AHCG2017FALL/reference_genome -a /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa -o /data2/AHCG2017FALL/output -d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle
+python ahcg_pipeline_v1.0.1.py \
+-t /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar \
+-b /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2 \
+-p /data2/AHCG2017FALL/bin/picard/picard.jar \
+-g /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar \
+-i /data2/AHCG2017FALL/data/SRR948994_1.fastq /data2/AHCG2017FALL/data/SRR948994_2.fastq \
+-w /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome \
+-r /data2/AHCG2017FALL/reference_genome/genome.fa \
+-a /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa \
+-o /data2/AHCG2017FALL/output \
+-d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
 
 
