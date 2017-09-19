@@ -4,6 +4,10 @@
 
 Variant calling pipeline for genomic data analysis
 
+## Mission Statement
+
+To create an efficient and easy to use pipeline for the early detection of cancer through non-invasive liquid biopsy from next generation sequencing data.
+
 ## Class Server
 
 Server: `gpuvannberg.biology.gatech.edu`
