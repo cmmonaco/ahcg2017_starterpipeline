@@ -51,6 +51,9 @@ Based on data from this [paper](https://www.nature.com/nbt/journal/v31/n11/full/
 
 ## Data Acquisition
 
+- Reference genome: Human Reference GRCh38 from [Illumina iGenomes](https://support.illumina.com/sequencing/sequencing_software/igenome.html)
+- SRR948994 acquired with SRA toolkit 
+
 ## Bowtie Index
 
 Pre-built index was supplied in the `../reference_genome` folder.
