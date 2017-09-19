@@ -60,7 +60,7 @@ Pre-built index was supplied in the `../reference_genome` folder.
 
 ## Running Pipeline
 
-python ahcg_pipeline_v1.0.1.py \
+Python ahcg_pipeline_v1.0.1Cai.py \
 -t /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar \
 -b /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2 \
 -p /data2/AHCG2017FALL/bin/picard/picard.jar \
@@ -72,4 +72,6 @@ python ahcg_pipeline_v1.0.1.py \
 -o /data2/AHCG2017FALL/output \
 -d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
 
+## Current Version 1.0.3 Notes
 
+- Specified Java 1.8 for Picard tools
