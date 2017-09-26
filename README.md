@@ -114,6 +114,16 @@ On GPUVannberg:
 On VM:
   
     $ scp -r cmonaco3@gpuvannberg.biology.gatech.edu:/data2/AHCG2017FALL/data/ .
-  
+
+## Cloning and Increasing Disk Size
+
+Cloning disk
+
+    $ vboxmanage clonehd Ubuntu-64-DR-AHCG2017-p10025-disk001.vmdk Ubuntu-64-DR-AHCG2017.vdi --format vdi
+    
+Resizing disk to 120 gig
+
+    $  vboxmanage modifyhd Ubuntu-64-DR-AHCG2017.vdi --resize 120000
+
 
 
