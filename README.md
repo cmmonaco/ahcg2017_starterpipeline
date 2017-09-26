@@ -75,3 +75,45 @@ Python ahcg_pipeline_v1.0.1Cai.py \
 ## Current Version 1.0.3 Notes
 
 - Specified Java 1.8 for Picard tools
+
+# Virtual Machine
+
+Prebuilt VMs were stored in `/data2/VMbox_prebuilt`. 
+
+  Monaco, Christopher                    cmonaco3         Ubuntu-64-DR-AHCG2017-p10025.ova    10025
+  
+## Adding and accessing VM
+
+VM was imported with this command
+ 
+  $ vboxmanage import Ubuntu-64-DR-AHCG2017-p10025.ova
+
+To get list of VMs to find correct ID
+
+  $ vboxmanage list vms
+
+VM was started with
+
+  $ vboxmanage startvm Ubuntu-64-DR-AHCG2017 --type headless
+
+VM was logged into with
+
+  $ ssh vannberglab@localhost -p 10025
+  password: vanberglab
+  
+WM can be shutdown with
+
+  $ vboxmanage controlvm Ubuntu-64-DR-AHCG2017 poweroff soft
+
+## Copying files from GPUVannberg to VM
+
+On GPUVannberg:
+
+  $ scp -r -P 10025 /data2/AHCG2017FALL/bin/ vannebrglab@localhost:~/
+  
+On VM:
+  
+  $ scp -r cmonaco3@gpuvannberg.biology.gatech.edu:/data2/AHCG2017FALL/data/ .
+  
+
+
