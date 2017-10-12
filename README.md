@@ -126,4 +126,19 @@ Resizing disk to 120 gig
     $  vboxmanage modifyhd Ubuntu-64-DR-AHCG2017.vdi --resize 120000
 
 
+# Read Depth Coverage Calculations
+
+## Extract Regions of Interest from BAM File
+
+Extracting only certain regions significantly increases search time.
+
+   $ samtools view input.bam "Chr10:18000-45500" > output.bam
+   
+## Compute Genome Coverage using Bed Tools
+
+We will use the genomecov tool. [documentation](http://bedtools.readthedocs.io/en/stable/content/tools/genomecov.html)
+
+   $ bedtools genomecov -d -ibam input.bam -g genome.bed > output.coverage
+   
+There's a script in bin/scripts
 
