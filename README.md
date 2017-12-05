@@ -1,144 +1,130 @@
-# Applied Human Computational Genomics Pipeline
-**Chris Monaco \
-  MS Bioinformatics 2018 | Georgia Institute of Technology**
+# Liquid Biopsy Variant Identification Pipeline
 
-Variant calling pipeline for genomic data analysis
+Chris Monaco
+M.S. Bioinformatics | Georgia Institute of Technology
+
+This pipeline is for variant calling and analysis of somatic mutations in liquid biopsy genomic data. It was developed as part of the Fall 2017 Appliced Human Computational Genomics course.
 
 ## Mission Statement
 
 To create an efficient and easy to use pipeline for the early detection of cancer through non-invasive liquid biopsy from next generation sequencing data.
 
-## Class Server
+## Pipeline
 
-Server: `gpuvannberg.biology.gatech.edu`
-Data Folder: `/data2/AHCG2017FALL/`
+### Overview
 
-## Requirements
+### Requirements
 
 1. [Python3 - version 3.4.1](https://www.python.org/download/releases/3.4.1/)
 2. [Trimmomatic - version 0.36](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip)
 3. [Bowtie2 - version 2.2.9](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
 4. [Picard tools - version 2.6.0](https://github.com/broadinstitute/picard/releases/download/2.6.0/picard.jar)
 5. [GATK - version 3.4](https://software.broadinstitute.org/gatk/download/)
+6. [SamTools - version 1.6](https://downloads.sourceforge.net/project/samtools/samtools/1.6/samtools-1.6.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fsamtools%2F&ts=1510018121&use_mirror=phoenixnap)
+7. [Control-FREEC - version 11.0](https://github.com/BoevaLab/FREEC/archive)
+8. [R - version 3.3.2](https://cran.cnr.berkeley.edu/) 
 
-## Reference genome
+### Configuration File
 
-Reference genomes can be downloaded from [Illumina iGenomes](http://support.illumina.com/sequencing/sequencing_software/igenome.html)
+The pipeline uses a configuration file to in order to easily and clearly set up paths to dependices and tool options. Parameters for the configuration file are shown below
 
-## Test data
+#### `[data]` section
 
-Use the following protocol to download and prepare test dataset from NIST sample NA12878
+| Option       | Description                                                                  |
+|--------------|------------------------------------------------------------------------------|
+| `inputfiles` | List of paired end read files (comma sparated)                               |
+| `geneset`    | Path to the bed file with genes of interest to calculate coverage statistics |
+| `outputdir`  | Path to the output directory                                                 |
+| `adapters`   | Path to adapters fasta file to perform sequence trimming with Trimmomatic    |
+| `chrlenfile` | Path to file with chromosome lengths for Control-FREEC                       |
+| `chrfiles`   | Path to the directory with chromosomes fasta files for Control-FREEC         |
+| `dbsnp`      | Path to dbSNP vcf file for GATK                                              |
+| `index`      | Path to the prefix of the reference Bowtie2 index                            |
+| `reference`  | Path to the reference genome fasta file                                      |
 
-```{sh}
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-wget ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
-gunzip NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
-head -100000 NIST7035_TAAGGCGA_L001_R1_001.fastq > test_r1.fastq
-head -100000 NIST7035_TAAGGCGA_L001_R2_001.fastq > test_r2.fastq
+#### `[tools]` section
+
+| Option        | Description                                                                                                |
+|---------------|------------------------------------------------------------------------------------------------------------|
+| `bowtie2`     | Path to Bowtie2 executable                                                                                 |
+| `freec`       | Path to Control-FREEC executable                                                                           |
+| `gatk`        | Path to GATK jar file                                                                                      |
+| `makegraph`   | Path to Control-FREEC `makeGraph.R` script (Usually in the folder `scripts` at the Control-FREEC root dir) |
+| `picard`      | Path to Picard jar file                                                                                    |
+| `samtools`    | Path to Samtools executable                                                                                |
+| `trimmomatic` | Path to Trimmomatic jar file                                                                               |
+
+#### `[freec-control]` section
+
+Optional section for Control-FREEC's config file `control` section parameters
+
+| Option          | Description                                                                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mateFile        | Path to file to act as control of the current sample. See control-FREEC manual for details>                                                                           |
+| inputFormat     | Format of mateFile (SAM, BAM, pileup and others. See control-FREEC manual for details)>                                                                               |
+| mateOrientation | Orientation of reads in mateFile. 0 - single ends), RF - Illumina mate-pairs, FR - Illumina paired-ends), FF - SOLiD mate-pairs. See control-FREEC manual for details |
+
+
+##### Example of config file
+
+```
+[data]
+# inputfiles      = /data2/AHCG2017FALL/data4/SRR2530742_1.fastq,/data2/AHCG2017FALL/data4/SRR2530742_2.fastq
+sraid           = SRR2530742
+geneset         = /data2/AHCG2017FALL/guardant360/guardant360.refGene_hg38.genes.bed
+outputdir       = /data2/AHCG2017FALL/output5
+
+adapters        = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa
+chrlenfile      = /data2/AHCG2017FALL/reference_genome/chromosomeSizes.txt
+chrfiles        = /data2/AHCG2017FALL/reference_genome/chroms/
+dbsnp           = /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
+index           = /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome
+reference       = /data2/AHCG2017FALL/reference_genome/genome.fa
+
+[tools]
+assesssig       = /data2/AHCG2017FALL/bin/FREEC/scripts/assess_significance.R
+bowtie2         = /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2
+fastq-dump      = /data2/AHCG2017FALL/bin/sratoolkit/bin/fastq-dump
+freec           = /data2/AHCG2017FALL/bin/FREEC/src/freec
+gatk            = /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar
+java            = /data2/AHCG2017FALL/bin/java-1.8/bin/java
+makegraph       = /data2/AHCG2017FALL/bin/FREEC/scripts/makeGraph.R
+picard          = /data2/AHCG2017FALL/bin/picard/picard.jar
+samtools        = /data2/AHCG2017FALL/bin/samtools-1.5/samtools
+trimmomatic     = /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar
+
+[freec-control]
+mateFile        = /data2/AHCG2017FALL/output4/SRR2530741_1_trimmed_final.bam
+inputFormat     = BAM
+mateOrientation = FR
 ```
 
-## Help
+### Data
 
-To access help use the following command:
+#### Reference Genome
+
+The reference genome used for testing of this pipeline is *Homo sapiens* GRCh38 and can be acquired from [Illumina iGenomes](http://support.illumina.com/sequencing/sequencing_software/igenome.html)
 
 ```{sh}
-python3 ahcg_pipeline.py -h
+wget ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Homo_sapiens/NCBI/GRCh38/Homo_sapiens_NCBI_GRCh38.tar.gz
 ```
-# August 31 - Sept 5: Assessing a Standard Variant Call Pipeline
 
-Based on data from this [paper](https://www.nature.com/nbt/journal/v31/n11/full/nbt.2696.html).
+#### Test Datasets
 
-## Data Acquisition
+The test datasets consist of paired tumor and germline samples.
 
-- Reference genome: Human Reference GRCh38 from [Illumina iGenomes](https://support.illumina.com/sequencing/sequencing_software/igenome.html)
-- SRR948994 acquired with SRA toolkit 
+* [SRR1654210 (tumor exome data)](https://www.ncbi.nlm.nih.gov/sra/?term=SRR1654210)
+* [SRR1654222 (germline exome data)](https://www.ncbi.nlm.nih.gov/sra/SRR1654222/)
 
-## Bowtie Index
+### Pipeline Execution
 
-Pre-built index was supplied in the `../reference_genome` folder.
+#### Build Output Directories
 
-## Running Pipeline
+```{sh}
+mkdir -p data/reads data/reference data/adapters output
+```
+#### Example of Execution Command
 
-Python ahcg_pipeline_v1.0.1Cai.py \
--t /data2/AHCG2017FALL/bin/Trimmomatic-0.36/trimmomatic-0.36.jar \
--b /data2/AHCG2017FALL/bin/bowtie2-2.2.9/bowtie2 \
--p /data2/AHCG2017FALL/bin/picard/picard.jar \
--g /data2/AHCG2017FALL/bin/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar \
--i /data2/AHCG2017FALL/data/SRR948994_1.fastq /data2/AHCG2017FALL/data/SRR948994_2.fastq \
--w /data2/AHCG2017FALL/reference_genome/Bowtie2Index/genome \
--r /data2/AHCG2017FALL/reference_genome/genome.fa \
--a /data2/AHCG2017FALL/bin/Trimmomatic-0.36/adapters/NexteraPE-PE.fa \
--o /data2/AHCG2017FALL/output \
--d /data2/AHCG2017FALL/reference_genome/GATKResourceBundle/dbsnp_146.hg38.vcf.gz
-
-## Current Version 1.0.3 Notes
-
-- Specified Java 1.8 for Picard tools
-
-# Virtual Machine
-
-Prebuilt VMs were stored in `/data2/VMbox_prebuilt`. 
-
-  Monaco, Christopher                    cmonaco3         Ubuntu-64-DR-AHCG2017-p10025.ova    10025
-  
-## Adding and accessing VM
-
-VM was imported with this command
- 
-    $ vboxmanage import Ubuntu-64-DR-AHCG2017-p10025.ova
-
-To get list of VMs to find correct ID
-
-    $ vboxmanage list vms
-
-VM was started with
-
-    $ vboxmanage startvm Ubuntu-64-DR-AHCG2017 --type headless
-
-VM was logged into with
-
-    $ ssh vannberglab@localhost -p 10025
-    password: vanberglab
-  
-WM can be shutdown with
-
-    $ vboxmanage controlvm Ubuntu-64-DR-AHCG2017 poweroff soft
-
-## Copying files from GPUVannberg to VM
-
-On GPUVannberg:
-
-    $ scp -r -P 10025 /data2/AHCG2017FALL/bin/ vannebrglab@localhost:~/
-  
-On VM:
-  
-    $ scp -r cmonaco3@gpuvannberg.biology.gatech.edu:/data2/AHCG2017FALL/data/ .
-
-## Cloning and Increasing Disk Size
-
-Cloning disk
-
-    $ vboxmanage clonehd Ubuntu-64-DR-AHCG2017-p10025-disk001.vmdk Ubuntu-64-DR-AHCG2017.vdi --format vdi
-    
-Resizing disk to 120 gig
-
-    $  vboxmanage modifyhd Ubuntu-64-DR-AHCG2017.vdi --resize 120000
-
-
-# Read Depth Coverage Calculations
-
-## Extract Regions of Interest from BAM File
-
-Extracting only certain regions significantly increases search time.
-
-   $ samtools view input.bam "Chr10:18000-45500" > output.bam
-   
-## Compute Genome Coverage using Bed Tools
-
-We will use the genomecov tool. [documentation](http://bedtools.readthedocs.io/en/stable/content/tools/genomecov.html)
-
-   $ bedtools genomecov -d -ibam input.bam -g genome.bed > output.coverage
-   
-There's a script in bin/scripts
-
+```{sh}
+./ahcg_pipeline.v1.0.7.py -c config_file.txt
+```
